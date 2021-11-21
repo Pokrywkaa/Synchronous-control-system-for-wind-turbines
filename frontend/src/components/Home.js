@@ -6,14 +6,12 @@ import '../App.css'
 
 const Home = ({speed, time, clients, currentClient, pe}) =>{
 
-    let actualSpeed, totalPe
+    let totalPe
 
     try{
-        actualSpeed=speed.at(-1).toPrecision(3)
         totalPe=pe.at(-1).toPrecision(3)
     }
     catch{
-        actualSpeed=totalPe=0
     }
 
     return(
@@ -24,11 +22,9 @@ const Home = ({speed, time, clients, currentClient, pe}) =>{
             <table id='table_parameters'>
                 <tbody>
                 <tr>
-                    <td>Actual Wind Speed</td>
                     <td>Total Electrical Power</td>
                 </tr>
                 <tr>
-                    <td>{actualSpeed} m/s</td>
                     <td>{totalPe} kW</td>
                 </tr>
                 </tbody>
@@ -37,7 +33,7 @@ const Home = ({speed, time, clients, currentClient, pe}) =>{
                 <tbody>
                 <tr>
                 {clients.map(client=>(<td key={client.id}>
-                <Link to={`/client/${client.id}`}>{client.name}</Link>
+                <Link id='Link' to={`/client/${client.id}`}>{client.name}</Link>
                  </td>))}
                 </tr>
                 </tbody>

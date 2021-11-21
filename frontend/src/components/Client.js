@@ -1,15 +1,23 @@
 import React, {useState, useEffect} from "react"
 import { Link, useRouteMatch } from "react-router-dom"
 import Plot from "react-plotly.js"
+import axios from 'axios'
 
-const Client = ({time, clients}) =>{
-
+const Client = ({clients, setClients}) =>{
 
     const match = useRouteMatch('/client/:id')
     let client = match
     ? clients.find(client=>client.id === match.params.id)
     : null
 
+    const update = (id, newValue)=>{
+      const request = axios.update(`http://127.0.0.1:5000/clients`, newValue)
+      return request.then(response=>response.data)
+    }
+
+    const turnOff = () =>{
+      console.log('Click')
+    }
 
     let valuePm, valuePe, valuePn, valueE
   
@@ -17,6 +25,7 @@ const Client = ({time, clients}) =>{
     if(!client){
         client=''
     }
+
     try{
       valuePm=client.Pm.at(-1).toPrecision(3)
       valuePe=client.Pe.at(-1).toPrecision(3)
@@ -26,6 +35,10 @@ const Client = ({time, clients}) =>{
     catch{
       valuePm=valuePe=valuePn=valueE=0
     }
+    let demand=[]
+    for(let i=0; i<9; i++){
+      demand.push(client.demand/1000)
+    }
 
     return(
     <div>
@@ -33,23 +46,39 @@ const Client = ({time, clients}) =>{
       <Plot
         data={[
           {
-            x: time,
-            y: client.Pe,
+            x: client.time,
+            y: client.speed,
             type: 'scatter',
             mode: 'lines+markers',
             marker: {color: 'blue'},
           },
-          {type: 'bar', x: time, y: client.Pe},
+          {type: 'bar', x: client.time, y: client.speed},
+        ]}
+        layout={{width: 600, height: 400, title: 'Wind Speed',
+        xaxis:{title: 'time [s]'},
+        yaxis:{title: 'speed [m/s]', range: [0,20]} 
+      }}
+      />
+      <Plot
+        data={[
+          {
+            x: client.time,
+            y: demand,
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: {color: 'black'},
+          },
+          {type: 'bar', x: client.time, y: client.Pe},
         ]}
         layout={{width: 1200, height: 400, title: 'Electrical Power',
         xaxis:{title: 'time [s]'},
-        yaxis:{title: 'Pe [kW]'} 
+        yaxis:{title: 'Pe [kW]', range: [0,200]} 
       }}
       />
       <table id='table_parameters'>
         <tbody>
-        <tr id='tr1'>
-          <td id='td1'>Rated Power</td>
+        <tr>
+          <td>Rated Power</td>
           <td>Generator efficiency</td>
           <td>Mechanical Power</td>
           <td>Electrical Power</td>
@@ -63,7 +92,8 @@ const Client = ({time, clients}) =>{
         </tbody>
       </table>
       <p>
-        <Link to='/'>Back to Home Page</Link>
+        <button onClick={turnOff}>Turn off client</button>
+        <Link id='Link' to='/'>Back to Home Page</Link>
       </p>
     </div>
     )

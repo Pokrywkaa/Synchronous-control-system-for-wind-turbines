@@ -24,3 +24,11 @@
   width: 100%;
   border: 4px solid black;
 }
+#Link{
+  color: white;
+  text-decoration: none;
+  
+}
+#Link:hover{
+  color: rgb(238, 26, 157)
+}

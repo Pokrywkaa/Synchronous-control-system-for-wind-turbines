@@ -56,7 +56,7 @@ function App() {
       <header className="App-header">
         <Switch>
           <Route path='/client/:id'>
-            <Client time={time} clients={clients}/>
+            <Client clients={clients}/>
           </Route>
           <Route path='/'>
             <Home speed={speed} time={time} clients={clients} currentClient={currentClients} pe={pe}/>
