@@ -14,6 +14,7 @@ timerList=[]
 sum_of_pe=[]
 i=0
 temp=[]
+map={}
 
 
 @socketio.on('connect')
@@ -86,7 +87,8 @@ def username(client):
         'Pe': [],
         'demand': client['demand'],
         'Cp': 0.44,
-        'Pe_demand': []
+        'Pe_demand': [],
+        'TurnOff': False
     }
     clients.append(clients_object)
 
@@ -99,6 +101,22 @@ def get_clients():
 @app.route('/time', methods = ['GET'])
 def get_time():
     return jsonify({'time': timerList, 'speed': speed})
+
+@app.route('/turnOff/<clientID>', methods = ['POST'])
+def turnOFF(clientID):
+    map={}
+    for n in clients:
+        map[n['id']]=n
+    map[clientID]['TurnOff']=True
+    return jsonify({})
+
+@app.route('/turnOn/<clientID>', methods = ['POST'])
+def turnOn(clientID):
+    map={}
+    for n in clients:
+        map[n['id']]=n
+    map[clientID]['TurnOff']=False
+    return jsonify({})
 
 
 

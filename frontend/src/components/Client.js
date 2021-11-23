@@ -3,20 +3,20 @@ import { Link, useRouteMatch } from "react-router-dom"
 import Plot from "react-plotly.js"
 import axios from 'axios'
 
-const Client = ({clients, setClients}) =>{
+const Client = ({clients}) =>{
 
     const match = useRouteMatch('/client/:id')
     let client = match
     ? clients.find(client=>client.id === match.params.id)
     : null
 
-    const update = (id, newValue)=>{
-      const request = axios.update(`http://127.0.0.1:5000/clients`, newValue)
-      return request.then(response=>response.data)
-    }
 
     const turnOff = () =>{
-      console.log('Click')
+      if (!client.TurnOff){
+      const request = axios.post(`http://127.0.0.1:5000/turnOff/${client.id}`, {}).then((data)=>{
+        console.log(data)
+      })
+    }
     }
 
     let valuePm, valuePe, valuePn, valueE
