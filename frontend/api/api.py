@@ -12,9 +12,9 @@ clients=[]
 speed=[]
 timerList=[]
 sum_of_pe=[]
+sum_of_pe_demand=[]
 i=0
-temp=[]
-map={}
+
 
 
 @socketio.on('connect')
@@ -55,24 +55,31 @@ def speedWind(speed):
 
     clients = list(map(lambda x: {**x, 'Pm': x['Pm']+[(0.5*1.25*x['speed'][-1]**3*3.14*x['parameter']['R']**2*0.44)/1000],
     'Pe': x['Pe']+[(0.5*1.25*x['speed'][-1]**3*3.14*x['parameter']['R']**2*0.41)/1000*x['parameter']['Efficiency']]}
-    if (0.5*1.25*x['speed'][-1]**3*3.14*x['parameter']['R']**2*0.41)/1000<x['parameter']['Pn'] 
+    if (0.5*1.25*x['speed'][-1]**3*3.14*x['parameter']['R']**2*0.41)/1000<x['parameter']['Pn'] and x['TurnOff'] == False
     else {**x, 'Pm': x['Pm']+[x['parameter']['Pn']],
-    'Pe': x['Pe']+[x['parameter']['Pn']*x['parameter']['Efficiency']]} if x['id']==request.sid else {**x},clients))
+    'Pe': x['Pe']+[x['parameter']['Pn']*x['parameter']['Efficiency']]} if x['TurnOff']==False else {**x, 'Pe': x['Pe']+[0], 'Pm': x['Pm']+[0]},clients))
 
     clients = list(map(lambda x: {**x, 'Pe_demand': x['Pe_demand']+[(0.5*1.25*x['speed'][-1]**3*3.14*x['parameter']['R']**2*x['Cp'])/1000]}
-    if x['Cp'] and (0.5*1.25*x['speed'][-1]**3*3.14*x['parameter']['R']**2*x['Cp'])/1000 < x['parameter']['Pn']
-    else {**x, 'Pe_demand': x['Pe_demand']+[x['Pe'][-1]]} if x['id']==request.sid else {**x},clients))
+    if x['Cp'] and (0.5*1.25*x['speed'][-1]**3*3.14*x['parameter']['R']**2*x['Cp'])/1000 < x['parameter']['Pn'] and x['TurnOff'] == False
+    else {**x, 'Pe_demand': x['Pe_demand']+[x['Pe'][-1]]} if x['TurnOff']==False else {**x, 'Pe_demand': x['Pe_demand']+[0]},clients))
 
 
     list_of_pe=list(map(lambda x: x['Pe'],clients))
     zipped_list=list(zip(*list_of_pe))
 
-
+    list_of_pe_demand=list(map(lambda x: x['Pe_demand'],clients))
+    zipped_list_demand=list(zip(*list_of_pe_demand))
+    
     for item in zipped_list:
         if len(sum_of_pe)>9:
             sum_of_pe.pop(0)
         item=sum(item)
         sum_of_pe.append(item)
+    for item in zipped_list_demand:
+        if len(sum_of_pe_demand)>9:
+            sum_of_pe_demand.pop(0)
+        item=sum(item)
+        sum_of_pe_demand.append(item)
 
 @socketio.on('username')
 def username(client):
@@ -96,7 +103,7 @@ def username(client):
 
 @app.route('/clients', methods = ['GET'])
 def get_clients():
-    return jsonify({'clients_counter':clients_counter, 'clients':clients, 'Sum_Pe': sum_of_pe})
+    return jsonify({'clients_counter':clients_counter, 'clients':clients, 'Sum_Pe': sum_of_pe, 'Sum_Pe_demand': sum_of_pe_demand})
 
 @app.route('/time', methods = ['GET'])
 def get_time():

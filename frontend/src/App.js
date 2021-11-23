@@ -11,30 +11,43 @@ function App() {
   const [currentClients, setCurrentClients] = useState(0)
   const [clients, setClients]=useState([])
   const [time,setTime]=useState([])
-  const [speed,setSpeed]=useState([])
   const [pe, setPe]=useState([])
+  const [peDemand, setPeDemand]=useState([])
+
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       window.location.reload()
+//     }, 10000)
+//     return () => clearInterval(interval);
+//  }, []);
+
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      window.location.reload()
-    }, 10000)
-    return () => clearInterval(interval);
- }, []);
+    const interval = setInterval(()=>{
 
-
-  useEffect(() => {
-    const getClientes = async ()=>{
-    let response = await axios.get('http://127.0.0.1:5000/clients',{
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    })
-    setCurrentClients(response.data.clients_counter)
-    setClients(response.data.clients)
-    setPe(response.data.Sum_Pe)
-  }
-  getClientes()
+      const getClients = async ()=>{
+      let response = await axios.get('http://127.0.0.1:5000/clients',{
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
+      let responseTime = await axios.get('http://127.0.0.1:5000/time',{
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
+      setTime(responseTime.data.time)
+      console.log(time)
+      setCurrentClients(response.data.clients_counter)
+      setClients(response.data.clients)
+      setPe(response.data.Sum_Pe)
+      setPeDemand(response.data.Sum_Pe_demand)
+    }
+    getClients()
+    }, 10000)    
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -46,10 +59,10 @@ function App() {
       }
     })
     setTime(response.data.time)
-    setSpeed(response.data.speed)
   }
   getSpeed()
   }, [])
+
 
   return (
     <div className="App">
@@ -59,7 +72,7 @@ function App() {
             <Client clients={clients}/>
           </Route>
           <Route path='/'>
-            <Home speed={speed} time={time} clients={clients} currentClient={currentClients} pe={pe}/>
+            <Home time={time} clients={clients} currentClient={currentClients} pe={pe} pe_demand={peDemand}/>
           </Route>
         </Switch>
       </header>

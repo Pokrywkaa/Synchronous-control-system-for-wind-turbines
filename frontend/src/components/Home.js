@@ -4,7 +4,7 @@ import MainPlots from "./MainPlots"
 import '../App.css'
 
 
-const Home = ({speed, time, clients, currentClient, pe}) =>{
+const Home = ({pe_demand, time, clients, currentClient, pe}) =>{
 
     let totalPe
 
@@ -17,8 +17,8 @@ const Home = ({speed, time, clients, currentClient, pe}) =>{
     return(
         <div>
             <h3>Connected clients: {clients.map(e=>e.name + ',')}</h3>
-            <p>Counter of clients: {currentClient}</p>
-            <MainPlots speed={speed} time={time} pe={pe}/>
+            <p>Number of clients: {currentClient}</p>
+            <MainPlots pe_demand={pe_demand} time={time} pe={pe}/>
             <table id='table_parameters'>
                 <tbody>
                 <tr>

@@ -2,19 +2,20 @@ import React from 'react'
 import Plot from 'react-plotly.js'
 
 
-const MainPlots = ({time, pe}) =>{
+const MainPlots = ({time, pe, pe_demand}) =>{
     return(
       <div>
       <Plot
         data={[
           {
             x: time,
-            y: pe,
+            y: pe_demand,
             type: 'scatter',
             mode: 'lines+markers',
             marker: {color: 'black'},
+            name: 'Demand'
           },
-          {type: 'bar', x: time, y: pe},
+          {type: 'bar', x: time, y: pe, name: 'Total'},
         ]}
         layout={{width: 1000, height: 300, title: 'Total electrical power',
         xaxis:{title: 'time [s]'},

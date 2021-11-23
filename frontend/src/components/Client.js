@@ -1,22 +1,43 @@
-import React, {useState, useEffect} from "react"
+import React, {useState} from "react"
 import { Link, useRouteMatch } from "react-router-dom"
 import Plot from "react-plotly.js"
 import axios from 'axios'
 
+// const useStateWithLocalStorage = localStorageKey => {
+//   const [value, setValue] = React.useState(
+//     localStorage.getItem(localStorageKey) || false
+//   )
+//   React.useEffect(() => {
+//     localStorage.setItem(localStorageKey, value)
+//   }, [value])
+
+//   return [value, setValue];
+// }
+
 const Client = ({clients}) =>{
+
+    // const [on, setOn] = useStateWithLocalStorage()
+    const [on, setOn] = useState(false)
+    const showWhenOff = { display: on ? 'none' : ''}
+    const showWhenOn = { display: on ? '' : 'none'}
 
     const match = useRouteMatch('/client/:id')
     let client = match
     ? clients.find(client=>client.id === match.params.id)
     : null
-
-
+  console.log(on)
     const turnOff = () =>{
       if (!client.TurnOff){
       const request = axios.post(`http://127.0.0.1:5000/turnOff/${client.id}`, {}).then((data)=>{
         console.log(data)
-      })
-    }
+        setOn(!on)
+      })}
+      else {
+        const request = axios.post(`http://127.0.0.1:5000/turnOn/${client.id}`, {}).then(data=>{
+          console.log(data)
+          setOn(!on)
+        })
+      }
     }
 
     let valuePm, valuePe, valuePn, valueE
@@ -36,7 +57,7 @@ const Client = ({clients}) =>{
       valuePm=valuePe=valuePn=valueE=0
     }
     let demand=[]
-    for(let i=0; i<9; i++){
+    for(let i=0; i<10; i++){
       demand.push(client.demand/1000)
     }
 
@@ -56,7 +77,8 @@ const Client = ({clients}) =>{
         ]}
         layout={{width: 600, height: 400, title: 'Wind Speed',
         xaxis:{title: 'time [s]'},
-        yaxis:{title: 'speed [m/s]', range: [0,20]} 
+        yaxis:{title: 'speed [m/s]', range: [0,20]},
+        showlegend: false 
       }}
       />
       <Plot
@@ -64,11 +86,12 @@ const Client = ({clients}) =>{
           {
             x: client.time,
             y: demand,
-            type: 'scatter',
+            type: 'sline',
             mode: 'lines+markers',
             marker: {color: 'black'},
+            name: 'Demand'
           },
-          {type: 'bar', x: client.time, y: client.Pe},
+          {type: 'bar', x: client.time, y: client.Pe, name: 'Total'},
         ]}
         layout={{width: 1200, height: 400, title: 'Electrical Power',
         xaxis:{title: 'time [s]'},
@@ -91,10 +114,13 @@ const Client = ({clients}) =>{
         </tr>
         </tbody>
       </table>
-      <p>
-        <button onClick={turnOff}>Turn off client</button>
+        <div style={showWhenOff}>
+          <button className='turnOff_button' onClick={turnOff}>Turn Off Client</button>
+        </div>
+        <div style={showWhenOn}>
+          <button className='turnOff_button' onClick={turnOff}>Turn On Client</button>
+        </div>
         <Link id='Link' to='/'>Back to Home Page</Link>
-      </p>
     </div>
     )
 }
