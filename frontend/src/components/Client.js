@@ -18,6 +18,8 @@ const Client = ({clients}) =>{
 
     // const [on, setOn] = useStateWithLocalStorage()
     const [on, setOn] = useState(false)
+    const [demand, setDemand] = useState('')
+
     const showWhenOff = { display: on ? 'none' : ''}
     const showWhenOn = { display: on ? '' : 'none'}
 
@@ -25,7 +27,8 @@ const Client = ({clients}) =>{
     let client = match
     ? clients.find(client=>client.id === match.params.id)
     : null
-  console.log(on)
+
+
     const turnOff = () =>{
       if (!client.TurnOff){
       const request = axios.post(`http://127.0.0.1:5000/turnOff/${client.id}`, {}).then((data)=>{
@@ -38,6 +41,19 @@ const Client = ({clients}) =>{
           setOn(!on)
         })
       }
+    }
+
+    const handleDemandChange = (event) =>{
+      setDemand(event.target.value)
+    }
+
+
+    const changeDemand = (event) =>{
+      event.preventDefault()
+      const request = axios.post(`http://127.0.0.1:5000/changeDemand/${client.id}`, {'demand': demand}).then((data)=>{
+        console.log(data)
+        setDemand('')
+      })
     }
 
     let valuePm, valuePe, valuePn, valueE
@@ -56,9 +72,9 @@ const Client = ({clients}) =>{
     catch{
       valuePm=valuePe=valuePn=valueE=0
     }
-    let demand=[]
+    let demandLine=[]
     for(let i=0; i<10; i++){
-      demand.push(client.demand/1000)
+      demandLine.push(client.demand/1000)
     }
 
     return(
@@ -85,7 +101,7 @@ const Client = ({clients}) =>{
         data={[
           {
             x: client.time,
-            y: demand,
+            y: demandLine,
             type: 'sline',
             mode: 'lines+markers',
             marker: {color: 'black'},
@@ -120,6 +136,10 @@ const Client = ({clients}) =>{
         <div style={showWhenOn}>
           <button className='turnOff_button' onClick={turnOff}>Turn On Client</button>
         </div>
+        <form onSubmit={changeDemand}>
+          <input className='demand_input' value={demand} onChange={handleDemandChange}/>
+          <button className='demand_button' type='submit'>Save demand</button>
+        </form>
         <Link id='Link' to='/'>Back to Home Page</Link>
     </div>
     )

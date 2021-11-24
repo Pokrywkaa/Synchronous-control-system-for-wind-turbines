@@ -39,7 +39,6 @@ function App() {
         }
       })
       setTime(responseTime.data.time)
-      console.log(time)
       setCurrentClients(response.data.clients_counter)
       setClients(response.data.clients)
       setPe(response.data.Sum_Pe)

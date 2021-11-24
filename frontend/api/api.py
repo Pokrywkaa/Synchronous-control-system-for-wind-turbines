@@ -1,3 +1,4 @@
+import re
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_socketio import SocketIO
@@ -125,6 +126,14 @@ def turnOn(clientID):
     map[clientID]['TurnOff']=False
     return jsonify({})
 
+@app.route('/changeDemand/<clientID>', methods = ['POST'])
+def changeDemand(clientID):
+    map={}
+    for n in clients:
+        map[n['id']]=n
+    newValue=request.get_json()
+    map[clientID]['demand']=int(newValue['demand'])
+    return jsonify({})
 
 
 
