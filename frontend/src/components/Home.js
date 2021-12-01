@@ -7,9 +7,11 @@ import '../App.css'
 const Home = ({pe_demand, time, clients, currentClient, pe}) =>{
 
     let totalPe
+    let actual_pe_demand
 
     try{
         totalPe=pe.at(-1).toPrecision(3)
+        actual_pe_demand=pe_demand.at(-1).toPrecision(3)
     }
     catch{
     }
@@ -23,9 +25,11 @@ const Home = ({pe_demand, time, clients, currentClient, pe}) =>{
                 <tbody>
                 <tr>
                     <td>Total Electrical Power</td>
+                    <td>Total Supplied Electrical Power</td>
                 </tr>
                 <tr>
                     <td>{totalPe} kW</td>
+                    <td>{actual_pe_demand} kW</td>
                 </tr>
                 </tbody>
             </table>

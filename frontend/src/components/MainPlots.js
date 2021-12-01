@@ -17,7 +17,7 @@ const MainPlots = ({time, pe, pe_demand}) =>{
           },
           {type: 'bar', x: time, y: pe, name: 'Total'},
         ]}
-        layout={{width: 1000, height: 300, title: 'Total electrical power',
+        layout={{width: 1400, height: 400, title: 'Total electrical power',
         xaxis:{title: 'time [s]'},
         yaxis:{title: 'Pe [kW]'},
       }}

@@ -1,6 +1,9 @@
 .App {
   text-align: center;
 }
+.client{
+	zoom: 90%;
+}
 
 .App-header {
   background-color: #282c34;
@@ -96,5 +99,6 @@
 ._demand_input:focus {
   outline:none;
 }
+
 
         
