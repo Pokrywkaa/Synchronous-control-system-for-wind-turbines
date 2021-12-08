@@ -1,0 +1,29 @@
+/* styles.css */
+
+/* Add styles here to customize the appearance of your app */
+
+#h1-config{
+    font-size: 40px;
+}
+
+#body1 {
+    height: 580px;
+    background: linear-gradient(#373B44, #4286f4);
+}
+
+#config{
+    position: relative;
+    top: 40px;
+    text-align: center;
+}
+#client{
+    position: relative;
+    top: 40px;
+    text-align: center;
+}
+#p1{
+    text-align: center;
+}
+#chart{
+    margin-top: 50px;
+}
