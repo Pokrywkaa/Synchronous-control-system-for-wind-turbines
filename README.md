@@ -13,3 +13,4 @@
 ![front](https://user-images.githubusercontent.com/78878731/195956695-5aee2ea3-3a98-4d36-8b06-9d2274376bdb.jpg)
 
 * Communication protocols such as HTTP and WebSocket are used in the application.
+* Used technologies: JavaScript, Electron, React, Python, Flask, HTML, CSS
